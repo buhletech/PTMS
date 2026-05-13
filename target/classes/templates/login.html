@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<title>Sign In - PTMS</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f4f4f4; color: black; min-height: 100vh; display: flex; flex-direction: column; }
+nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; }
+nav .brand { font-size: 17px; font-weight: bold; color: white; }
+.login-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+.login-box { background: white; border: 2px solid black; border-radius: 10px; padding: 40px 44px; width: 100%; max-width: 420px; }
+.login-box .title { text-align: center; margin-bottom: 28px; }
+.login-box .title .icon { font-size: 40px; }
+.login-box .title h1 { font-size: 22px; margin-top: 8px; }
+.login-box .title p  { font-size: 13px; color: #666; margin-top: 4px; }
+.role-toggle { display: flex; border: 1px solid black; border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+.role-toggle input[type=radio] { display: none; }
+.role-toggle label { flex: 1; text-align: center; padding: 9px 0; font-size: 13px; font-weight: bold; cursor: pointer; background: white; color: black; transition: background 0.15s; text-transform: none; margin: 0; }
+.role-toggle input[type=radio]:checked + label { background: black; color: white; }
+.form-group { margin-bottom: 18px; }
+label { display: block; font-size: 12px; font-weight: bold; color: black; margin-bottom: 6px; text-transform: uppercase; }
+input[type=email], input[type=password] { width: 100%; padding: 10px 12px; border: 1px solid black; border-radius: 5px; font-size: 14px; }
+.field-error { color: #cc0000; font-size: 11px; margin-top: 5px; display: none; }
+.btn-login { width: 100%; padding: 11px; background: black; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 6px; }
+.btn-login:hover { opacity: 0.8; }
+.error-box { background: #fff0f0; border: 1px solid #cc0000; border-radius: 5px; color: #cc0000; padding: 10px 14px; font-size: 13px; margin-bottom: 18px; }
+</style>
+</head>
+<body>
+<nav><span class="brand">&#127979; Parent Teacher Management System</span></nav>
+<div class="login-wrap">
+  <div class="login-box">
+    <div class="title">
+      <div class="icon">&#128274;</div>
+      <h1>Sign In</h1>
+      <p>Select your role and enter your credentials</p>
+    </div>
+    <div class="error-box" th:if="${error}" th:text="'⚠ ' + ${error}"></div>
+    <form th:action="@{/login}" method="post" id="loginForm" novalidate>
+      <div class="role-toggle">
+        <input type="radio" name="role" id="roleTeacher" value="teacher" th:checked="${role == null || role == 'teacher'}">
+        <label for="roleTeacher">&#128104;&#8205;&#127979; Teacher</label>
+        <input type="radio" name="role" id="roleParent" value="parent" th:checked="${role == 'parent'}">
+        <label for="roleParent">&#128106; Parent</label>
+      </div>
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="you@example.com" autofocus>
+        <div class="field-error" id="emailError">&#9888; Please enter your email address.</div>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Enter your password">
+        <div class="field-error" id="passwordError">&#9888; Please enter your password.</div>
+      </div>
+      <button type="submit" class="btn-login">Sign In &#8594;</button>
+    </form>
+  </div>
+</div>
+<script>
+document.getElementById('loginForm').addEventListener('submit', function(e) {
+  var email=document.getElementById('email'), password=document.getElementById('password');
+  var emailErr=document.getElementById('emailError'), passErr=document.getElementById('passwordError');
+  var valid=true;
+  email.style.border=''; password.style.border=''; emailErr.style.display='none'; passErr.style.display='none';
+  if (!email.value.trim()) { email.style.border='1px solid red'; emailErr.style.display='block'; valid=false; }
+  else if (!email.value.includes('@')) { email.style.border='1px solid red'; emailErr.textContent='\u26A0 Enter a valid email.'; emailErr.style.display='block'; valid=false; }
+  if (!password.value.trim()) { password.style.border='1px solid red'; passErr.style.display='block'; valid=false; }
+  if (!valid) e.preventDefault();
+});
+</script>
+</body>
+</html>

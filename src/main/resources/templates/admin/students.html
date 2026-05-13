@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Manage Students - Admin</title>
+  <style>* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+nav { background: #1a1a2e; padding: 0 24px; display: flex; align-items: center; height: 56px; gap: 4px; }
+nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 24px; }
+nav .badge-admin { background: #e63946; color: white; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+nav a { color: #adb5bd; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; }
+nav a:hover { background: #2d2d44; color: white; }
+nav .logout { margin-left: auto; color: #ff6b6b; }
+nav .username { color: #6c757d; font-size: 12px; padding: 6px 8px; }
+.page-header { display: flex; align-items: center; justify-content: space-between; margin: 28px 32px 18px; }
+.page-header h1 { font-size: 20px; color: #1a1a2e; }
+.alert { margin: 0 32px 18px; padding: 11px 16px; border-radius: 6px; font-size: 14px; border-left: 4px solid #2dc653; background: white; }
+.btn { display: inline-block; padding: 8px 18px; border-radius: 5px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; color: white; }
+.btn-primary { background: #1a1a2e; }
+.btn-edit { background: #457b9d; }
+.btn-danger { background: #e63946; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn:hover { opacity: 0.85; }
+.table-wrap { margin: 0 32px; background: white; border-radius: 10px; border: 1px solid #dee2e6; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: #1a1a2e; }
+thead th { color: white; padding: 13px 16px; text-align: left; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+tbody td { padding: 12px 16px; font-size: 13px; border-bottom: 1px solid #f1f3f5; }
+tbody tr:hover td { background: #f8f9fa; }
+tbody tr:last-child td { border-bottom: none; }
+.badge { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: bold; background: #1a1a2e; color: white; }
+.empty-td { text-align: center; color: #adb5bd; padding: 32px !important; font-style: italic; }
+  </style></head>
+<body>
+<nav>
+  <span class="brand">&#9881; Admin Panel <span class="badge-admin">ADMIN</span></span>
+  <a th:href="@{/admin/dashboard}">&#128202; Dashboard</a>
+  <span class="username">&#128100; <span th:text="${session.adminUser}"></span></span>
+  <a th:href="@{/admin/logout}" class="logout">Sign Out</a>
+</nav>
+<div class="page-header">
+  <h1>&#127891; Manage Students</h1>
+  <a th:href="@{/admin/students(action='new')}" class="btn btn-primary">+ Enrol Student</a>
+</div>
+<div class="alert" th:if="${param.msg != null}">
+  <span th:if="${param.msg[0] == 'inserted'}">&#10003; Student enrolled successfully.</span>
+  <span th:if="${param.msg[0] == 'updated'}">&#10003; Student updated successfully.</span>
+  <span th:if="${param.msg[0] == 'deleted'}">&#10003; Student removed.</span>
+</div>
+<div class="table-wrap"><table>
+  <thead><tr><th>ID</th><th>First Name</th><th>Surname</th><th>Grade</th><th>Class</th><th>Actions</th></tr></thead>
+  <tbody>
+  <tr th:each="s : ${students}">
+    <td><span class="badge" th:text="${s.studentId}"></span></td>
+    <td th:text="${s.name}"></td>
+    <td th:text="${s.surname}"></td>
+    <td><span class="badge" th:text="'Grade ' + ${s.grade}"></span></td>
+    <td th:text="${s.className}"></td>
+    <td>
+      <a th:href="@{/admin/students(action='edit',id=${s.studentId})}" class="btn btn-edit btn-sm">Edit</a>
+      <a th:href="@{/admin/students(action='delete',id=${s.studentId})}" class="btn btn-danger btn-sm"
+         onclick="return confirm('Remove this student?')">Remove</a>
+    </td>
+  </tr>
+  <tr th:if="${#lists.isEmpty(students)}"><td colspan="6" class="empty-td">No students enrolled yet.</td></tr>
+  </tbody>
+</table></div>
+</body></html>

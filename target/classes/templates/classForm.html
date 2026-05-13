@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Class Form - PTMS</title><style>* { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: Arial; background: white; color: black; } nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; } nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; } nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; } nav a:hover { background: #333; color: white; } .page-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 20px; } .page-header h1 { font-size: 20px; } .btn { display: inline-block; padding: 8px 18px; border-radius: 4px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; } .btn-success { background: black; color: white; } .btn-secondary { background: white; color: black; border: 1px solid black; } .btn:hover { opacity: 0.75; } .form-wrap { margin: 0 28px; } .form-card { background: white; border-radius: 8px; padding: 32px 36px; max-width: 560px; border: 1px solid black; } .form-card h2 { font-size: 15px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid black; } .form-group { margin-bottom: 18px; } .form-row { display: flex; gap: 16px; } .form-row .form-group { flex: 1; } label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; } input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid black; border-radius: 5px; font-size: 14px; background: white; color: black; } textarea { resize: vertical; height: 80px; } input:focus, select:focus, textarea:focus { outline: none; border-color: #555; } .form-actions { margin-top: 24px; display: flex; gap: 10px; } .hint { font-size: 11px; color: #888; margin-top: 4px; }</style></head>
+<body>
+<nav><span class="brand">&#127979; PTMS</span><a th:href="@{/dashboard}">Home</a><a th:href="@{/classes}">Classes</a></nav>
+<div class="page-header">
+  <h1 th:text="${schoolClass == null ? '&#127979; Add Class' : '&#127979; Edit Class'}">Class Form</h1>
+  <a th:href="@{/classes}" class="btn btn-secondary">&#8592; Back</a>
+</div>
+<div class="form-wrap"><div class="form-card">
+  <h2 th:text="${schoolClass == null ? 'Enter Class Details' : 'Update Class Details'}"></h2>
+  <form th:action="@{/classes}" method="post">
+    <input type="hidden" name="action" th:value="${schoolClass != null ? 'update' : 'insert'}">
+    <input type="hidden" name="classId" th:if="${schoolClass != null}" th:value="${schoolClass.classId}">
+    <div class="form-row">
+      <div class="form-group"><label>Class Name</label><input type="text" name="className" th:value="${schoolClass?.className}" placeholder="e.g. 10A" required></div>
+      <div class="form-group"><label>Grade Level</label>
+        <select name="gradeLevel" required>
+          <option value="">-- Select --</option>
+          <option th:each="g : ${#numbers.sequence(8,12)}" th:value="${g}" th:text="${g}" th:selected="${schoolClass != null && schoolClass.gradeLevel == g}"></option>
+        </select>
+      </div>
+    </div>
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success" th:text="${schoolClass == null ? '&#10003; Add Class' : '&#10003; Update Class'}"></button>
+      <a th:href="@{/classes}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div></div>
+</body></html>

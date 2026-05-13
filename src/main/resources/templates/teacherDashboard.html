@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Teacher Dashboard - PTMS</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: white; color: black; }
+    nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; gap: 4px; }
+    nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 20px; }
+    nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; }
+    nav a:hover { background: #333; color: white; }
+    nav .logout { margin-left: auto; color: #ff6b6b; }
+    nav .logout:hover { background: #333; color: #ff9999; }
+    nav .username { color: #aaa; font-size: 12px; padding: 6px 8px; }
+    .hero { background: black; color: white; padding: 28px 28px 24px; }
+    .hero h1 { font-size: 22px; }
+    .hero p  { font-size: 14px; color: #ccc; margin-top: 4px; }
+    .dashboard { padding: 28px; }
+    .section-title { font-size: 16px; font-weight: bold; margin-bottom: 14px; border-bottom: 2px solid black; padding-bottom: 8px; }
+    .quick-links { display: flex; flex-wrap: wrap; gap: 16px; margin-bottom: 36px; }
+    .ql-card { background: white; border: 2px solid black; border-radius: 8px; padding: 20px 22px; text-decoration: none; color: black; min-width: 140px; text-align: center; transition: background 0.15s; }
+    .ql-card:hover { background: black; color: white; }
+    .ql-card .icon { font-size: 28px; margin-bottom: 8px; }
+    .ql-card h3 { font-size: 13px; }
+    .two-col { display: flex; gap: 28px; flex-wrap: wrap; }
+    .panel { flex: 1; min-width: 280px; }
+    .table-wrap { border: 1px solid black; border-radius: 8px; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: black; }
+    thead th { color: white; padding: 10px 14px; text-align: left; font-size: 12px; }
+    tbody td { padding: 10px 14px; font-size: 13px; border-bottom: 1px solid #eee; }
+    tbody tr:last-child td { border-bottom: none; }
+    tbody tr:hover td { background: #f9f9f9; }
+    .empty-td { text-align: center; color: #aaa; padding: 20px !important; font-style: italic; }
+  </style>
+</head>
+<body>
+<nav>
+  <span class="brand">&#127979; PTMS</span>
+  <a th:href="@{/students}">Students</a>
+  <a th:href="@{/subjects}">My Subjects</a>
+  <a th:href="@{/assessments}">Assessments</a>
+  <a th:href="@{/marks}">Marks</a>
+  <a th:href="@{/attendance}">Attendance</a>
+  <a th:href="@{/announcements}">Announcements</a>
+  <a th:href="@{/meetings}">Meetings</a>
+  <span class="username">&#128104;&#8205;&#127979; <span th:text="${session.userName}"></span></span>
+  <a th:href="@{/logout}" class="logout">Sign Out</a>
+</nav>
+<div class="hero">
+  <h1>Welcome back, <span th:text="${session.userName}"></span> &#128104;&#8205;&#127979;</h1>
+  <p>Here's an overview of your upcoming meetings and recent announcements.</p>
+</div>
+<div class="dashboard">
+  <div class="section-title">Quick Access</div>
+  <div class="quick-links">
+    <a th:href="@{/students}"      class="ql-card"><div class="icon">&#127891;</div><h3>My Students</h3></a>
+    <a th:href="@{/subjects}"      class="ql-card"><div class="icon">&#128218;</div><h3>My Subjects</h3></a>
+    <a th:href="@{/assessments}"   class="ql-card"><div class="icon">&#128203;</div><h3>Assessments</h3></a>
+    <a th:href="@{/marks}"         class="ql-card"><div class="icon">&#9998;</div><h3>Marks</h3></a>
+    <a th:href="@{/attendance}"    class="ql-card"><div class="icon">&#128197;</div><h3>Attendance</h3></a>
+    <a th:href="@{/announcements}" class="ql-card"><div class="icon">&#128226;</div><h3>Announcements</h3></a>
+    <a th:href="@{/meetings}"      class="ql-card"><div class="icon">&#129309;</div><h3>Meetings</h3></a>
+  </div>
+  <div class="two-col">
+    <div class="panel">
+      <div class="section-title">&#128197; My Upcoming Meetings</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Parent</th><th>Date</th><th>Time</th></tr></thead>
+        <tbody>
+        <tr th:each="m : ${myMeetings}">
+          <td th:text="${m.parentName}"></td>
+          <td th:text="${m.meetingDate}"></td>
+          <td th:text="${m.meetingTime}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(myMeetings)}">
+          <td colspan="3" class="empty-td">No meetings scheduled.</td>
+        </tr>
+        </tbody>
+      </table></div>
+    </div>
+    <div class="panel">
+      <div class="section-title">&#128226; Recent Announcements</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Title</th><th>Date</th></tr></thead>
+        <tbody>
+        <tr th:each="a : ${myAnnouncements}">
+          <td th:text="${a.title}"></td>
+          <td th:text="${a.datePosted}"></td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(myAnnouncements)}">
+          <td colspan="2" class="empty-td">No announcements yet.</td>
+        </tr>
+        </tbody>
+      </table></div>
+    </div>
+  </div>
+</div>
+</body></html>

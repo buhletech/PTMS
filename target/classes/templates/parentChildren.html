@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>My Children - PTMS</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: Arial; background: white; color: black; }
+        nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; }
+        nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; }
+        nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; }
+        nav a:hover { background: #333; color: white; }
+        .page-header { margin: 24px 28px 20px; }
+        .page-header h1 { font-size: 20px; }
+        .page-header p { font-size: 13px; color: #666; margin-top: 4px; }
+        .children-grid { display: flex; flex-wrap: wrap; gap: 20px; margin: 0 28px; }
+        .child-card { background: white; border: 2px solid black; border-radius: 10px; padding: 28px; min-width: 260px; flex: 1; max-width: 360px; }
+        .child-icon { font-size: 40px; margin-bottom: 12px; }
+        .child-name { font-size: 20px; font-weight: bold; margin-bottom: 4px; }
+        .child-info { font-size: 13px; color: #555; margin-bottom: 20px; line-height: 1.6; }
+        .child-actions { display: flex; flex-direction: column; gap: 10px; }
+        .btn { display: block; text-align: center; padding: 10px 16px; border-radius: 5px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; color: white; }
+        .btn-marks { background: black; }
+        .btn-attend { background: #444; }
+        .btn:hover { opacity: 0.75; }
+        .no-children { margin: 40px 28px; padding: 40px; border: 2px dashed #ccc; border-radius: 8px; text-align: center; color: #888; font-size: 14px; }
+    </style>
+</head>
+<body>
+<nav>
+    <span class="brand">&#127979; PTMS</span>
+    <a th:href="@{/dashboard}">Home</a>
+    <a th:href="@{/meetings}">Meetings</a>
+    <a th:href="@{/logout}" style="margin-left:auto;color:#ff6b6b;">Sign Out</a>
+</nav>
+<div class="page-header">
+    <h1>&#127891; My Children</h1>
+    <p th:text="'Showing all children with the surname matching yours — ' + ${parentName}"></p>
+</div>
+
+<div class="children-grid" th:if="${not #lists.isEmpty(children)}">
+    <div class="child-card" th:each="c : ${children}">
+        <div class="child-icon">&#127891;</div>
+        <div class="child-name" th:text="${c.name + ' ' + c.surname}"></div>
+        <div class="child-info">
+            <span th:text="'Grade: ' + ${c.grade}"></span><br>
+            <span th:text="'Class: ' + ${c.className}"></span>
+        </div>
+        <div class="child-actions">
+            <a th:href="@{/parent/marks(studentId=${c.studentId})}"
+               class="btn btn-marks">&#9998; View Marks</a>
+            <a th:href="@{/parent/attendance(studentId=${c.studentId})}"
+               class="btn btn-attend">&#128203; View Attendance</a>
+        </div>
+    </div>
+</div>
+
+<div class="no-children" th:if="${#lists.isEmpty(children)}">
+    &#128269; No children found matching your surname.<br>
+    Please contact the school administrator to ensure your child is enrolled correctly.
+</div>
+</body></html>

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Assessment Form - PTMS</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial; background: white; color: black; }
+    nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; }
+    nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; }
+    nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; }
+    nav a:hover { background: #333; color: white; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 20px; }
+    .page-header h1 { font-size: 20px; }
+    .btn { display: inline-block; padding: 8px 18px; border-radius: 4px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; }
+    .btn-success { background: black; color: white; }
+    .btn-secondary { background: white; color: black; border: 1px solid black; }
+    .btn:hover { opacity: 0.75; }
+    .form-wrap { margin: 0 28px; }
+    .form-card { background: white; border-radius: 8px; padding: 32px 36px; max-width: 520px; border: 1px solid black; }
+    .form-card h2 { font-size: 15px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid black; }
+    .form-group { margin-bottom: 18px; }
+    .form-row { display: flex; gap: 16px; }
+    .form-row .form-group { flex: 1; }
+    label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; }
+    input, select { width: 100%; padding: 9px 12px; border: 1px solid black; border-radius: 5px; font-size: 14px; }
+    input:focus, select:focus { outline: none; border-color: #555; }
+    .form-actions { margin-top: 24px; display: flex; gap: 10px; }
+    .hint { font-size: 11px; color: #888; margin-top: 4px; }
+  </style>
+</head>
+<body>
+<nav>
+  <span class="brand">&#127979; PTMS</span>
+  <a th:href="@{/dashboard}">Home</a>
+  <a th:href="@{/assessments}">Assessments</a>
+</nav>
+<div class="page-header">
+  <h1 th:text="${assessment == null ? '&#128203; Add Assessment' : '&#128203; Edit Assessment'}">Assessment</h1>
+  <a th:href="@{/assessments}" class="btn btn-secondary">&#8592; Back</a>
+</div>
+<div class="form-wrap"><div class="form-card">
+  <h2 th:text="${assessment == null ? 'Enter Assessment Details' : 'Update Assessment Details'}"></h2>
+  <form th:action="@{/assessments}" method="post">
+    <input type="hidden" name="action"
+           th:value="${assessment != null ? 'update' : 'insert'}">
+    <input type="hidden" name="assessmentId"
+           th:if="${assessment != null}" th:value="${assessment.assessmentId}">
+
+    <div class="form-group">
+      <label>Assessment Title</label>
+      <input type="text" name="title"
+             th:value="${assessment?.title}"
+             placeholder="e.g. Chapter 3 Test" required>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Date</label>
+        <input type="date" name="assessmentDate"
+               th:value="${assessment?.assessmentDate}" required>
+      </div>
+
+      <div class="form-group">
+        <label>Subject &amp; Class</label>
+        <select name="subjectId" required>
+          <option value="">-- Select Subject --</option>
+          <option th:each="s : ${subjects}"
+                  th:value="${s.subjectId}"
+                  th:text="${s.subjectName + ' (' + s.className + ')'}"
+                  th:selected="${assessment != null && assessment.subjectId == s.subjectId}">
+          </option>
+        </select>
+        <p class="hint">Each entry shows the subject and the specific class it is for.</p>
+      </div>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-success"
+              th:text="${assessment == null ? '&#10003; Add Assessment' : '&#10003; Update Assessment'}">
+      </button>
+      <a th:href="@{/assessments}" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div></div>
+</body></html>

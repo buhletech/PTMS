@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Allocate Students - Admin</title>
+    <style>* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+nav { background: #1a1a2e; padding: 0 24px; display: flex; align-items: center; height: 56px; gap: 4px; }
+nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 24px; }
+nav .badge-admin { background: #e63946; color: white; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+nav a { color: #adb5bd; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; }
+nav a:hover { background: #2d2d44; color: white; }
+nav .logout { margin-left: auto; color: #ff6b6b; }
+nav .username { color: #6c757d; font-size: 12px; padding: 6px 8px; }
+.page-header { display: flex; align-items: center; justify-content: space-between; margin: 28px 32px 18px; }
+.page-header h1 { font-size: 20px; color: #1a1a2e; }
+.alert { margin: 0 32px 18px; padding: 11px 16px; border-radius: 6px; font-size: 14px; border-left: 4px solid #2dc653; background: white; }
+.btn { display: inline-block; padding: 8px 18px; border-radius: 5px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; color: white; }
+.btn-primary { background: #1a1a2e; }
+.btn-secondary { background: white; color: #1a1a2e; border: 1px solid #1a1a2e; }
+.btn:hover { opacity: 0.85; }
+.form-wrap { margin: 0 32px; }
+.form-card { background: white; border-radius: 10px; padding: 28px 32px; border: 1px solid #dee2e6; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+.form-card h2 { font-size: 15px; margin-bottom: 6px; color: #1a1a2e; }
+.form-card p { font-size: 13px; color: #6c757d; margin-bottom: 20px; border-bottom: 1px solid #dee2e6; padding-bottom: 16px; }
+.student-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; margin-bottom: 24px; }
+.student-item { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border: 1px solid #dee2e6; border-radius: 6px; background: white; cursor: pointer; transition: border-color 0.15s; }
+.student-item:hover { border-color: #1a1a2e; }
+.student-item input[type=checkbox] { width: 16px; height: 16px; cursor: pointer; }
+.student-item label { font-size: 13px; cursor: pointer; flex: 1; }
+.student-item .grade-badge { font-size: 11px; font-weight: bold; background: #1a1a2e; color: white; padding: 2px 7px; border-radius: 10px; }
+.student-item.checked { border-color: #2dc653; background: #f0fff4; }
+.form-actions { display: flex; gap: 10px; }
+.empty-msg { color: #adb5bd; font-style: italic; padding: 20px 0; }
+    </style></head>
+<body>
+<nav>
+    <span class="brand">&#9881; Admin Panel <span class="badge-admin">ADMIN</span></span>
+    <a th:href="@{/admin/dashboard}">&#128202; Dashboard</a>
+    <span class="username">&#128100; <span th:text="${session.adminUser}"></span></span>
+    <a th:href="@{/admin/logout}" class="logout">Sign Out</a>
+</nav>
+<div class="page-header">
+    <h1>&#127891; Allocate Students</h1>
+    <a th:href="@{/admin/teachers}" class="btn btn-secondary">&#8592; Back to Teachers</a>
+</div>
+<div class="alert" th:if="${param.msg != null}">&#10003; Student allocations saved successfully.</div>
+<div class="form-wrap">
+    <div class="form-card">
+        <h2>Teacher: <span th:text="${teacher.name + ' ' + teacher.surname}"></span></h2>
+        <p>Tick the students you want to assign to this teacher. Untick to remove them.</p>
+        <form th:action="@{/admin/teachers/{id}/students(id=${teacher.teacherId})}" method="post">
+            <div class="student-grid" th:if="${not #lists.isEmpty(allStudents)}">
+                <div th:each="s : ${allStudents}"
+                     th:classappend="${allocatedIds.contains(s.studentId)} ? 'student-item checked' : 'student-item'"
+                     class="student-item">
+                    <input type="checkbox" name="studentIds"
+                           th:value="${s.studentId}"
+                           th:id="'s' + ${s.studentId}"
+                           th:checked="${allocatedIds.contains(s.studentId)}">
+                    <label th:for="'s' + ${s.studentId}"
+                           th:text="${s.name + ' ' + s.surname}"></label>
+                    <span class="grade-badge" th:text="'Gr ' + ${s.grade}"></span>
+                </div>
+            </div>
+            <p class="empty-msg" th:if="${#lists.isEmpty(allStudents)}">
+                No students found. Add students first from the admin dashboard.
+            </p>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">&#10003; Save Allocations</button>
+                <a th:href="@{/admin/teachers}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    // Highlight card when checkbox is ticked
+    document.querySelectorAll('.student-item input[type=checkbox]').forEach(cb => {
+      cb.addEventListener('change', function() {
+        this.closest('.student-item').classList.toggle('checked', this.checked);
+      });
+    });
+</script>
+</body></html>

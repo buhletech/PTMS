@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Subject Form - Admin</title>
+    <style>* { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: Arial, sans-serif; background: #f0f2f5; color: #1a1a2e; } nav { background: #1a1a2e; padding: 0 24px; display: flex; align-items: center; height: 56px; gap: 4px; } nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 24px; } nav .badge-admin { background: #e63946; color: white; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle; } nav a { color: #adb5bd; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; } nav a:hover { background: #2d2d44; color: white; } nav .logout { margin-left: auto; color: #ff6b6b; } nav .username { color: #6c757d; font-size: 12px; padding: 6px 8px; } .page-header { display: flex; align-items: center; justify-content: space-between; margin: 28px 32px 20px; } .page-header h1 { font-size: 20px; color: #1a1a2e; } .btn { display: inline-block; padding: 8px 18px; border-radius: 5px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; } .btn-primary { background: #1a1a2e; color: white; } .btn-secondary { background: white; color: #1a1a2e; border: 1px solid #1a1a2e; } .btn:hover { opacity: 0.85; } .form-wrap { margin: 0 32px; } .form-card { background: white; border-radius: 10px; padding: 32px 36px; max-width: 580px; border: 1px solid #dee2e6; box-shadow: 0 2px 6px rgba(0,0,0,0.06); } .form-card h2 { font-size: 15px; color: #1a1a2e; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid #1a1a2e; } .form-group { margin-bottom: 18px; } .form-row { display: flex; gap: 16px; } .form-row .form-group { flex: 1; } label { display: block; font-size: 11px; font-weight: bold; color: #6c757d; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; } input, select { width: 100%; padding: 9px 12px; border: 1px solid #ced4da; border-radius: 5px; font-size: 14px; } input:focus, select:focus { outline: none; border-color: #1a1a2e; } .form-actions { margin-top: 24px; display: flex; gap: 10px; }</style>
+</head>
+<body>
+<nav>
+    <span class="brand">&#9881; Admin Panel <span class="badge-admin">ADMIN</span></span>
+    <a th:href="@{/admin/dashboard}">&#128202; Dashboard</a>
+    <span class="username">&#128100; <span th:text="${session.adminUser}"></span></span>
+    <a th:href="@{/admin/logout}" class="logout">Sign Out</a>
+</nav>
+<div class="page-header">
+    <h1 th:text="${subject == null ? '&#128218; Add Subject' : '&#128218; Edit Subject'}">Subject</h1>
+    <a th:href="@{/admin/subjects}" class="btn btn-secondary">&#8592; Back</a>
+</div>
+<div class="form-wrap"><div class="form-card">
+    <h2 th:text="${subject == null ? 'Enter Subject Details' : 'Update Subject Details'}"></h2>
+    <form th:action="@{/admin/subjects}" method="post">
+        <input type="hidden" name="action"    th:value="${subject != null ? 'update' : 'insert'}">
+        <input type="hidden" name="subjectId" th:if="${subject != null}" th:value="${subject.subjectId}">
+        <div class="form-group"><label>Subject Name</label>
+            <input type="text" name="subjectName" th:value="${subject?.subjectName}" placeholder="e.g. Mathematics" required>
+        </div>
+        <div class="form-row">
+            <div class="form-group"><label>Assign to Teacher</label>
+                <select name="teacherId" required>
+                    <option value="">-- Select Teacher --</option>
+                    <option th:each="t : ${teachers}"
+                            th:value="${t.teacherId}"
+                            th:text="${t.name + ' ' + t.surname}"
+                            th:selected="${subject != null && subject.teacherId == t.teacherId}"></option>
+                </select>
+            </div>
+            <div class="form-group"><label>Class</label>
+                <select name="classId" required>
+                    <option value="">-- Select Class --</option>
+                    <option th:each="c : ${classes}"
+                            th:value="${c.classId}"
+                            th:text="${c.className + ' (Grade ' + c.gradeLevel + ')'}"
+                            th:selected="${subject != null && subject.classId == c.classId}"></option>
+                </select>
+            </div>
+        </div>
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary"
+                    th:text="${subject == null ? '&#10003; Add Subject' : '&#10003; Update Subject'}"></button>
+            <a th:href="@{/admin/subjects}" class="btn btn-secondary">Cancel</a>
+        </div>
+    </form>
+</div></div>
+</body></html>

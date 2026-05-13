@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Admin Login - PTMS</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+nav { background: #1a1a2e; padding: 0 24px; display: flex; align-items: center; height: 56px; gap: 4px; }
+nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 24px; }
+nav .badge-admin { background: #e63946; color: white; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+nav a { color: #adb5bd; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; }
+nav a:hover, nav a.active { background: #2d2d44; color: white; }
+nav .logout { margin-left: auto; color: #ff6b6b; }
+nav .logout:hover { background: #2d2d44; color: #ff9999; }
+nav .username { color: #6c757d; font-size: 12px; padding: 6px 8px; }
+body { display: flex; flex-direction: column; min-height: 100vh; }
+.login-wrap { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+.login-box { background: white; border: 1px solid #dee2e6; border-radius: 12px; padding: 44px 48px; width: 100%; max-width: 400px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
+.login-box .title { text-align: center; margin-bottom: 32px; }
+.login-box .title .icon { font-size: 44px; }
+.login-box .title h1 { font-size: 22px; margin-top: 10px; color: #1a1a2e; }
+.login-box .title p { font-size: 13px; color: #6c757d; margin-top: 4px; }
+.admin-badge { display: inline-block; background: #e63946; color: white; font-size: 11px; font-weight: bold; padding: 3px 10px; border-radius: 12px; margin-top: 8px; }
+.form-group { margin-bottom: 20px; }
+label { display: block; font-size: 11px; font-weight: bold; color: #6c757d; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+input[type=text], input[type=password] { width: 100%; padding: 11px 13px; border: 1px solid #ced4da; border-radius: 6px; font-size: 14px; }
+input:focus { outline: none; border-color: #1a1a2e; box-shadow: 0 0 0 3px rgba(26,26,46,0.1); }
+.btn-login { width: 100%; padding: 12px; background: #1a1a2e; color: white; border: none; border-radius: 6px; font-size: 15px; font-weight: bold; cursor: pointer; margin-top: 6px; }
+.btn-login:hover { background: #2d2d44; }
+.error-box { background: #fff5f5; border: 1px solid #e63946; border-radius: 6px; color: #e63946; padding: 11px 14px; font-size: 13px; margin-bottom: 20px; }
+.back-link { text-align: center; margin-top: 20px; font-size: 12px; color: #6c757d; }
+.back-link a { color: #457b9d; text-decoration: none; }
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">&#9881; PTMS Admin Panel <span class="badge-admin">ADMIN</span></span>
+</nav>
+<div class="login-wrap">
+  <div class="login-box">
+    <div class="title">
+      <div class="icon">&#128274;</div>
+      <h1>Admin Sign In</h1>
+      <p>Restricted access — administrators only</p>
+      <div class="admin-badge">&#9881; ADMIN PORTAL</div>
+    </div>
+    <div class="error-box" th:if="${error}" th:text="'⚠ ' + ${error}"></div>
+    <form th:action="@{/admin/login}" method="post">
+      <div class="form-group">
+        <label>Username</label>
+        <input type="text" name="username" placeholder="Admin username" autofocus required>
+      </div>
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" name="password" placeholder="Admin password" required>
+      </div>
+      <button type="submit" class="btn-login">Sign In &#8594;</button>
+    </form>
+    <div class="back-link">
+      Not an admin? <a th:href="@{/login}">Teacher / Parent login &#8594;</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

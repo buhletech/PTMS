@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Attendance - PTMS</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial; background: white; color: black; }
+    nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; }
+    nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; }
+    nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; }
+    nav a:hover { background: #333; color: white; }
+    .page-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 16px; }
+    .page-header h1 { font-size: 20px; }
+    .alert { margin: 0 28px 16px; padding: 11px 16px; border-radius: 5px; font-size: 14px; border-left: 4px solid black; background: #f9f9f9; }
+    .class-selector { margin: 0 28px 24px; display: flex; align-items: center; gap: 12px; }
+    .class-selector label { font-size: 13px; font-weight: bold; }
+    .class-selector select { padding: 8px 12px; border: 1px solid black; border-radius: 5px; font-size: 14px; min-width: 220px; }
+    .section-title { font-size: 15px; font-weight: bold; margin: 0 28px 12px; padding-bottom: 8px; border-bottom: 2px solid black; }
+    .table-wrap { margin: 0 28px 32px; border-radius: 8px; border: 1px solid black; overflow: hidden; }
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { background: black; }
+    thead th { color: white; padding: 11px 16px; text-align: left; font-size: 13px; }
+    tbody td { padding: 10px 16px; font-size: 13px; border-bottom: 1px solid #ddd; }
+    tbody tr:hover td { background: #f5f5f5; }
+    tbody tr:last-child td { border-bottom: none; }
+    .badge { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: bold; background: black; color: white; }
+    .badge-present { background: #2dc653; }
+    .badge-absent  { background: #e63946; }
+    .badge-late    { background: #f4a261; }
+    .empty-td { text-align: center; color: #aaa; padding: 28px !important; font-style: italic; }
+    .btn { display: inline-block; padding: 6px 14px; border-radius: 4px; border: none; cursor: pointer; font-size: 12px; font-weight: bold; text-decoration: none; color: white; }
+    .btn-add { background: black; }
+    .btn-danger { background: #cc0000; }
+    .btn:hover { opacity: 0.75; }
+    .no-class { margin: 40px 28px; text-align: center; color: #888; font-size: 14px; padding: 40px; border: 2px dashed #ddd; border-radius: 8px; }
+  </style>
+</head>
+<body>
+<nav>
+  <span class="brand">&#127979; PTMS</span>
+  <a th:href="@{/dashboard}">Home</a>
+  <a th:href="@{/students}">Students</a>
+  <a th:href="@{/marks}">Marks</a>
+  <a th:href="@{/logout}" style="margin-left:auto;color:#ff6b6b;">Sign Out</a>
+</nav>
+
+<div class="page-header"><h1>&#128203; Attendance</h1></div>
+
+<div class="alert" th:if="${param.msg != null}">
+  <span th:if="${param.msg[0] == 'inserted'}">&#10003; Attendance recorded.</span>
+  <span th:if="${param.msg[0] == 'updated'}">&#10003; Attendance updated.</span>
+  <span th:if="${param.msg[0] == 'deleted'}">&#10003; Record deleted.</span>
+</div>
+
+<!-- Class Selector -->
+<div class="class-selector">
+  <label>&#127979; Select Class:</label>
+  <form method="get" th:action="@{/attendance}">
+    <select name="classId" onchange="this.form.submit()">
+      <option value="">-- Select a class --</option>
+      <option th:each="c : ${teacherClasses}"
+              th:value="${c.classId}"
+              th:text="${c.className + ' (Grade ' + c.gradeLevel + ')'}"
+              th:selected="${selectedClassId != null && selectedClassId == c.classId}">
+      </option>
+    </select>
+  </form>
+</div>
+
+<!-- No class selected -->
+<div class="no-class" th:if="${selectedClassId == null}">
+  &#128197; Select a class above to view students and record attendance.
+</div>
+
+<!-- Student list with Record Attendance buttons -->
+<div th:if="${selectedClassId != null}">
+  <div class="section-title">&#127891; Students — Click to Record Attendance</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Name</th><th>Surname</th><th>Grade</th><th>Action</th></tr></thead>
+    <tbody>
+    <tr th:each="s : ${students}">
+      <td th:text="${s.name}"></td>
+      <td th:text="${s.surname}"></td>
+      <td><span class="badge" th:text="'Grade ' + ${s.grade}"></span></td>
+      <td>
+        <a th:href="@{/attendance(action='new',studentId=${s.studentId},classId=${selectedClassId})}"
+           class="btn btn-add">+ Record</a>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(students)}">
+      <td colspan="4" class="empty-td">No students in this class yet.</td>
+    </tr>
+    </tbody>
+  </table></div>
+
+  <!-- Recent attendance records for this class -->
+  <div class="section-title">&#128197; Recent Attendance Records</div>
+  <div class="table-wrap"><table>
+    <thead><tr><th>Student</th><th>Subject</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>
+    <tr th:each="a : ${recentAttendance}">
+      <td th:text="${a.studentName}"></td>
+      <td th:text="${a.subjectName}"></td>
+      <td th:text="${a.date}"></td>
+      <td>
+        <span th:if="${a.status == 'Present'}" class="badge badge-present">Present</span>
+        <span th:if="${a.status == 'Absent'}"  class="badge badge-absent">Absent</span>
+        <span th:if="${a.status == 'Late'}"    class="badge badge-late">Late</span>
+      </td>
+      <td>
+        <a th:href="@{/attendance(action='edit',id=${a.attendanceId},classId=${selectedClassId})}"
+           class="btn btn-add">Edit</a>
+        <a th:href="@{/attendance(action='delete',id=${a.attendanceId},classId=${selectedClassId})}"
+           class="btn btn-danger"
+           onclick="return confirm('Delete this record?')">Delete</a>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(recentAttendance)}">
+      <td colspan="5" class="empty-td">No attendance recorded for this class yet.</td>
+    </tr>
+    </tbody>
+  </table></div>
+</div>
+</body></html>

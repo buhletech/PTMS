@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>&#128197; Meetings - PTMS</title><style>* { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: Arial; background: white; color: black; } nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; } nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; } nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; } nav a:hover { background: #333; color: white; } .page-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 16px; } .page-header h1 { font-size: 20px; } .alert { margin: 0 28px 16px; padding: 11px 16px; border-radius: 5px; font-size: 14px; border-left: 4px solid black; } .btn { display: inline-block; padding: 8px 18px; border-radius: 4px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; color: white; } .btn-success { background: black; } .btn-primary { background: #444; } .btn-danger { background: #222; } .btn-sm { padding: 5px 12px; font-size: 12px; } .btn:hover { opacity: 0.75; } .table-wrap { margin: 0 28px; border-radius: 8px; border: 1px solid black; overflow: hidden; } table { width: 100%; border-collapse: collapse; } thead tr { background: black; } thead th { color: white; padding: 12px 16px; text-align: left; font-size: 13px; } tbody td { padding: 11px 16px; font-size: 13px; border-bottom: 1px solid #ddd; } tbody tr:hover td { background: #f5f5f5; } tbody tr:last-child td { border-bottom: none; } .badge { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: bold; background: black; color: white; } .empty-td { text-align: center; color: #aaa; padding: 28px !important; font-style: italic; }</style></head>
+<body>
+<nav><span class="brand">&#127979; PTMS</span><a th:href="@{/dashboard}">Home</a><a th:href="@{/logout}" style="margin-left:auto;color:#ff6b6b;">Sign Out</a></nav>
+<div class="page-header"><h1>&#128197; Meetings</h1><a th:href="@{/meetings(action='new')}" class="btn btn-success">+ Book Meeting</a></div>
+<div class="alert" th:if="${param.msg != null}">
+  <span th:if="${param.msg[0] == 'inserted'}">&#10003; Meeting added.</span>
+  <span th:if="${param.msg[0] == 'updated'}">&#10003; Meeting updated.</span>
+  <span th:if="${param.msg[0] == 'deleted'}">&#10003; Meeting deleted.</span>
+</div>
+<div class="table-wrap"><table>
+  <thead><tr><th>ID</th><th>Parent</th><th>Teacher</th><th>Date</th><th>Time</th><th>Notes</th><th>Actions</th></tr></thead>
+  <tbody>
+    <tr th:each="m : ${meetings}">
+      <td><span class="badge" th:text="${m.meetingId}"></span></td>
+      <td th:text="${m.parentName}"></td>
+      <td th:text="${m.teacherName}"></td>
+      <td th:text="${m.meetingDate}"></td>
+      <td th:text="${m.meetingTime}"></td>
+      <td th:text="${m.notes}"></td>
+      <td>
+        <a th:href="@{/meetings(action='edit',id=${m.meetingId})}" class="btn btn-primary btn-sm">Edit</a>
+        <a th:href="@{/meetings(action='delete',id=${m.meetingId})}" class="btn btn-danger btn-sm" onclick="return confirm('Delete this record?')">Delete</a>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(meetings)}"><td colspan="7" class="empty-td">No records found.</td></tr>
+  </tbody>
+</table></div>
+</body></html>

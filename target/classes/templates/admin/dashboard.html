@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Admin Dashboard - PTMS</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: #f0f2f5; color: #1a1a2e; }
+nav { background: #1a1a2e; padding: 0 24px; display: flex; align-items: center; height: 56px; gap: 4px; }
+nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 24px; }
+nav .badge-admin { background: #e63946; color: white; font-size: 10px; font-weight: bold; padding: 2px 7px; border-radius: 10px; margin-left: 6px; vertical-align: middle; }
+nav a { color: #adb5bd; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; }
+nav a:hover, nav a.active { background: #2d2d44; color: white; }
+nav .logout { margin-left: auto; color: #ff6b6b; }
+nav .logout:hover { background: #2d2d44; color: #ff9999; }
+nav .username { color: #6c757d; font-size: 12px; padding: 6px 8px; }
+.hero { background: #1a1a2e; color: white; padding: 32px; }
+.hero h1 { font-size: 22px; } .hero p { font-size: 14px; color: #adb5bd; margin-top: 4px; }
+.dashboard { padding: 32px; }
+.section-title { font-size: 16px; font-weight: bold; margin-bottom: 20px; color: #1a1a2e; border-bottom: 2px solid #1a1a2e; padding-bottom: 8px; }
+.stat-cards { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 40px; }
+.stat-card { background: white; border-radius: 10px; padding: 28px 32px; flex: 1; min-width: 180px; border: 1px solid #dee2e6; box-shadow: 0 2px 6px rgba(0,0,0,0.06); text-align: center; }
+.stat-card .count { font-size: 42px; font-weight: bold; color: #1a1a2e; }
+.stat-card .label { font-size: 13px; color: #6c757d; margin-top: 4px; }
+.stat-card .icon { font-size: 30px; margin-bottom: 8px; }
+.mgmt-cards { display: flex; gap: 20px; flex-wrap: wrap; }
+.mgmt-card { background: white; border-radius: 10px; padding: 28px; flex: 1; min-width: 220px; border: 1px solid #dee2e6; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+.mgmt-card h3 { font-size: 16px; margin-bottom: 12px; color: #1a1a2e; }
+.mgmt-card p { font-size: 13px; color: #6c757d; margin-bottom: 20px; line-height: 1.5; }
+.btn { display: inline-block; padding: 9px 20px; border-radius: 5px; font-size: 13px; font-weight: bold; text-decoration: none; color: white; background: #1a1a2e; border: none; cursor: pointer; }
+.btn:hover { opacity: 0.85; }
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">&#9881; Admin Panel <span class="badge-admin">ADMIN</span></span>
+  <a th:href="@{/admin/dashboard}" class="active">&#128202; Dashboard</a>
+
+  <span class="username">&#128100; <span th:text="${session.adminUser}"></span></span>
+  <a th:href="@{/admin/logout}" class="logout">Sign Out</a>
+</nav>
+<div class="hero">
+  <h1>&#128202; Admin Dashboard</h1>
+  <p>Manage teachers, parents and students across the system.</p>
+</div>
+<div class="dashboard">
+  <div class="section-title">System Overview</div>
+  <div class="stat-cards">
+    <div class="stat-card">
+      <div class="icon">&#128104;&#8205;&#127979;</div>
+      <div class="count" th:text="${teacherCount}">0</div>
+      <div class="label">Teachers</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">&#128106;</div>
+      <div class="count" th:text="${parentCount}">0</div>
+      <div class="label">Parents</div>
+    </div>
+    <div class="stat-card">
+      <div class="icon">&#127891;</div>
+      <div class="count" th:text="${studentCount}">0</div>
+      <div class="label">Students</div>
+    </div>
+  </div>
+
+  <div class="section-title">Manage</div>
+  <div class="mgmt-cards">
+    <div class="mgmt-card">
+      <h3>&#128104;&#8205;&#127979; Teachers</h3>
+      <p>Add, edit or remove teacher accounts and allocate students to them.</p>
+      <a th:href="@{/admin/teachers}" class="btn">Manage Teachers</a>
+    </div>
+    <div class="mgmt-card">
+      <h3>&#128106; Parents</h3>
+      <p>Add, edit or remove parent accounts.</p>
+      <a th:href="@{/admin/parents}" class="btn">Manage Parents</a>
+    </div>
+    <div class="mgmt-card">
+      <h3>&#127891; Students</h3>
+      <p>Enrol, update or remove student records.</p>
+      <a th:href="@{/admin/students}" class="btn">Manage Students</a>
+    </div>
+    <div class="mgmt-card">
+      <h3>&#127979; Classes</h3>
+      <p>Create and manage school classes and grade levels.</p>
+      <a th:href="@{/admin/classes}" class="btn">Manage Classes</a>
+    </div>
+    <div class="mgmt-card">
+      <h3>&#128218; Subjects</h3>
+      <p>Create subjects and assign them to teachers and classes.</p>
+      <a th:href="@{/admin/subjects}" class="btn">Manage Subjects</a>
+    </div>
+  </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><meta charset="UTF-8"><title>Teachers - Parent Teacher Management System</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: Arial, sans-serif; background: white; color: black; }
+nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; }
+nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; }
+nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; }
+nav a:hover { background: #333; color: white; }
+.page-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 16px; }
+.page-header h1 { font-size: 20px; color: black; }
+.alert { margin: 0 28px 16px; padding: 11px 16px; border-radius: 5px; font-size: 14px; background: white; color: black; border-left: 4px solid black; }
+.btn { display: inline-block; padding: 8px 18px; border-radius: 4px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; color: white; }
+.btn-success { background: black; }
+.btn-primary { background: #444; }
+.btn-danger { background: #222; }
+.btn-sm { padding: 5px 12px; font-size: 12px; }
+.btn:hover { opacity: 0.75; }
+.table-wrap { margin: 0 28px; background: white; border-radius: 8px; border: 1px solid black; overflow: hidden; }
+table { width: 100%; border-collapse: collapse; }
+thead tr { background: black; }
+thead th { color: white; padding: 12px 16px; text-align: left; font-size: 13px; }
+tbody td { padding: 11px 16px; font-size: 13px; border-bottom: 1px solid #ddd; }
+tbody tr:hover td { background: #f5f5f5; }
+tbody tr:last-child td { border-bottom: none; }
+.badge { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: bold; background: black; color: white; }
+.empty-td { text-align: center; color: #aaa; padding: 28px !important; font-style: italic; }
+</style>
+</head>
+<body>
+<nav>
+  <span class="brand">&#127979; Parent Teacher Management System</span>
+  <a th:href="@{/dashboard}">Home</a>
+</nav>
+<div class="page-header">
+  <h1>&#128218; Teachers</h1>
+  <a th:href="@{/teachers(action='new')}" class="btn btn-success">+ Add Teacher</a>
+</div>
+<div class="alert" th:if="${param.msg != null}">
+  <span th:if="${param.msg[0] == 'inserted'}">&#10003; Teacher added successfully.</span>
+  <span th:if="${param.msg[0] == 'updated'}">&#10003; Teacher updated successfully.</span>
+  <span th:if="${param.msg[0] == 'deleted'}">&#10003; Teacher deleted successfully.</span>
+</div>
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr><th>ID</th><th>First Name</th><th>Surname</th><th>Email</th><th>Actions</th></tr>
+    </thead>
+    <tbody>
+      <tr th:each="t : ${teachers}">
+        <td><span class="badge" th:text="${t.teacherId}"></span></td>
+        <td th:text="${t.name}"></td>
+        <td th:text="${t.surname}"></td>
+        <td th:text="${t.email}"></td>
+        <td>
+          <a th:href="@{/teachers(action='edit',id=${t.teacherId})}" class="btn btn-primary btn-sm">Edit</a>
+          <a th:href="@{/teachers(action='delete',id=${t.teacherId})}" class="btn btn-danger btn-sm"
+             th:onclick="'return confirm(\'Delete ' + ${t.name} + ' ' + ${t.surname} + '?\')'">Delete</a>
+        </td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(teachers)}">
+        <td colspan="5" class="empty-td">No teachers found. Click &quot;+ Add Teacher&quot; to get started.</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>
