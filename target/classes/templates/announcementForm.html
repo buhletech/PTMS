@@ -1,32 +1,75 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><meta charset="UTF-8"><title>Announcement Form - PTMS</title><style>* { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: Arial; background: white; color: black; } nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; } nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; } nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; } nav a:hover { background: #333; color: white; } .page-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 20px; } .page-header h1 { font-size: 20px; } .btn { display: inline-block; padding: 8px 18px; border-radius: 4px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; } .btn-success { background: black; color: white; } .btn-secondary { background: white; color: black; border: 1px solid black; } .btn:hover { opacity: 0.75; } .form-wrap { margin: 0 28px; } .form-card { background: white; border-radius: 8px; padding: 32px 36px; max-width: 560px; border: 1px solid black; } .form-card h2 { font-size: 15px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid black; } .form-group { margin-bottom: 18px; } .form-row { display: flex; gap: 16px; } .form-row .form-group { flex: 1; } label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; } input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid black; border-radius: 5px; font-size: 14px; background: white; color: black; } textarea { resize: vertical; height: 80px; } input:focus, select:focus, textarea:focus { outline: none; border-color: #555; } .form-actions { margin-top: 24px; display: flex; gap: 10px; } .hint { font-size: 11px; color: #888; margin-top: 4px; }</style></head>
+<head><meta charset="UTF-8"><title>Announcement Form - PTMS</title>
+  <style>* { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: Arial; background: white; color: black; } nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; } nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; } nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; } nav a:hover { background: #333; color: white; } .page-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 20px; } .page-header h1 { font-size: 20px; } .btn { display: inline-block; padding: 8px 18px; border-radius: 4px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; } .btn-success { background: black; color: white; } .btn-secondary { background: white; color: black; border: 1px solid black; } .btn:hover { opacity: 0.75; } .form-wrap { margin: 0 28px; } .form-card { background: white; border-radius: 8px; padding: 32px 36px; max-width: 560px; border: 1px solid black; } .form-card h2 { font-size: 15px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid black; } .form-group { margin-bottom: 18px; } .form-row { display: flex; gap: 16px; } .form-row .form-group { flex: 1; } label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; } input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid black; border-radius: 5px; font-size: 14px; background: white; color: black; } textarea { resize: vertical; height: 80px; } input:focus, select:focus, textarea:focus { outline: none; border-color: #555; } select:disabled { background: #f0f0f0; color: #555; cursor: not-allowed; } .form-actions { margin-top: 24px; display: flex; gap: 10px; } .hint { font-size: 11px; color: #888; margin-top: 4px; }</style>
+</head>
 <body>
 <nav><span class="brand">&#127979; PTMS</span><a th:href="@{/dashboard}">Home</a><a th:href="@{/announcements}">Announcements</a></nav>
 <div class="page-header">
-  <h1 th:text="${announcement == null ? '&#128226; New Announcement' : '&#128226; Edit Announcement'}">Announcement Form</h1>
+  <h1 th:text="${announcement == null ? '&#128226; New Announcement' : '&#128226; Edit Announcement'}">Announcement</h1>
   <a th:href="@{/announcements}" class="btn btn-secondary">&#8592; Back</a>
 </div>
 <div class="form-wrap"><div class="form-card">
   <h2 th:text="${announcement == null ? 'Enter Announcement Details' : 'Update Announcement Details'}"></h2>
   <form th:action="@{/announcements}" method="post">
-    <input type="hidden" name="action" th:value="${announcement != null ? 'update' : 'insert'}">
+    <input type="hidden" name="action"         th:value="${announcement != null ? 'update' : 'insert'}">
     <input type="hidden" name="announcementId" th:if="${announcement != null}" th:value="${announcement.announcementId}">
-    <div class="form-group"><label>Title</label><input type="text" name="title" th:value="${announcement?.title}" required></div>
-    <div class="form-group"><label>Message</label><textarea name="message" th:text="${announcement?.message}" required></textarea></div>
-    <div class="form-row">
-      <div class="form-group"><label>Teacher</label>
-        <select name="teacherId" required>
-          <option value="">-- Select Teacher --</option>
-          <option th:each="t : ${teachers}" th:value="${t.teacherId}" th:text="${t.name + ' ' + t.surname}" th:selected="${announcement != null && announcement.teacherId == t.teacherId}"></option>
-        </select>
-      </div>
-      <div class="form-group"><label>Date</label><input type="date" name="datePosted" th:value="${announcement?.datePosted}" required></div>
+
+    <div class="form-group">
+      <label>Title</label>
+      <input type="text" name="title" th:value="${announcement?.title}" required>
     </div>
+
+    <div class="form-group">
+      <label>Message</label>
+      <textarea name="message" th:text="${announcement?.message}" required></textarea>
+    </div>
+
+    <div class="form-row">
+      <!-- Teacher auto-selected and locked to logged-in teacher -->
+      <div class="form-group">
+        <label>Teacher</label>
+        <!-- Hidden input submits the value since disabled fields are not submitted -->
+        <input type="hidden" name="teacherId"
+               th:value="${announcement != null ? announcement.teacherId : loggedInTeacherId}">
+        <select disabled>
+          <option th:each="t : ${teachers}"
+                  th:value="${t.teacherId}"
+                  th:text="${t.name + ' ' + t.surname}"
+                  th:selected="${(announcement != null && announcement.teacherId == t.teacherId)
+                             || (loggedInTeacherId != null && loggedInTeacherId == t.teacherId)}">
+          </option>
+        </select>
+        <p class="hint">Auto-filled with your account.</p>
+      </div>
+
+      <!-- Date — cannot go backwards -->
+      <div class="form-group">
+        <label>Date Posted</label>
+        <input type="date" name="datePosted"
+               id="datePosted"
+               th:value="${announcement?.datePosted}"
+               required>
+      </div>
+    </div>
+
     <div class="form-actions">
-      <button type="submit" class="btn btn-success" th:text="${announcement == null ? '&#10003; Post Announcement' : '&#10003; Update Announcement'}"></button>
+      <button type="submit" class="btn btn-success"
+              th:text="${announcement == null ? '&#10003; Post Announcement' : '&#10003; Update Announcement'}"></button>
       <a th:href="@{/announcements}" class="btn btn-secondary">Cancel</a>
     </div>
   </form>
 </div></div>
+
+<script>
+  // Set minimum date to today — cannot select past dates
+  var today = new Date().toISOString().split('T')[0];
+  document.getElementById('datePosted').min = today;
+
+  // If no date is set yet (new form), default to today
+  var dateField = document.getElementById('datePosted');
+  if (!dateField.value) {
+    dateField.value = today;
+  }
+</script>
 </body></html>

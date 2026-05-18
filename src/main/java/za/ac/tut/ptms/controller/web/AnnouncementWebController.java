@@ -1,9 +1,12 @@
 package za.ac.tut.ptms.controller.web;
 
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import za.ac.tut.ptms.model.Announcement;
+import za.ac.tut.ptms.model.Teacher;
 import za.ac.tut.ptms.repository.AnnouncementRepository;
 import za.ac.tut.ptms.repository.TeacherRepository;
 
@@ -15,24 +18,37 @@ public class AnnouncementWebController {
     public AnnouncementWebController(AnnouncementRepository r, TeacherRepository tr) { repo=r; teacherRepo=tr; }
 
     @GetMapping
-    public String handle(@RequestParam(required=false) String action,@RequestParam(required=false) Integer id, Model m) {
-        if ("new".equals(action)){
-            m.addAttribute("teachers", teacherRepo.getAll());
-            return "announcementForm";
+    public String handle(@RequestParam(required = false) String action,
+                         @RequestParam(required = false) Integer id,
+                         HttpServletRequest request, Model model) {
+
+        HttpSession session = request.getSession(false);
+        String role = (String) session.getAttribute("userRole");
+
+        if ("parent".equals(role) && action != null) {
+            return "redirect:/announcements";
         }
 
-        if ("edit".equals(action)){
-            m.addAttribute("announcement", repo.getById(id));
-            m.addAttribute("teachers", teacherRepo.getAll());
-            return "announcementForm";
+        // Pass logged-in teacher's ID for auto-selection
+        if ("teacher".equals(role)) {
+            Teacher t = (Teacher) session.getAttribute("loggedInUser");
+            model.addAttribute("loggedInTeacherId", t.getTeacherId());
         }
 
-        if ("delete".equals(action)){
+        if ("new".equals(action)) {
+            model.addAttribute("teachers", teacherRepo.getAll());
+            return "announcementForm";
+        }
+        if ("edit".equals(action)) {
+            model.addAttribute("announcement", repo.getById(id));
+            model.addAttribute("teachers", teacherRepo.getAll());
+            return "announcementForm";
+        }
+        if ("delete".equals(action)) {
             repo.delete(id);
             return "redirect:/announcements?msg=deleted";
         }
-
-        m.addAttribute("announcements", repo.getAll());
+        model.addAttribute("announcements", repo.getAll());
         return "announcements";
     }
 
