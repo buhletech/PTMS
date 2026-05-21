@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head><meta charset="UTF-8"><title>Meeting Form - PTMS</title>
-  <style>* { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: Arial; background: white; color: black; } nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; } nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; } nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; } nav a:hover { background: #333; color: white; } .page-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 20px; } .page-header h1 { font-size: 20px; } .btn { display: inline-block; padding: 8px 18px; border-radius: 4px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; } .btn-success { background: black; color: white; } .btn-secondary { background: white; color: black; border: 1px solid black; } .btn:hover { opacity: 0.75; } .form-wrap { margin: 0 28px; } .form-card { background: white; border-radius: 8px; padding: 32px 36px; max-width: 560px; border: 1px solid black; } .form-card h2 { font-size: 15px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid black; } .form-group { margin-bottom: 18px; } .form-row { display: flex; gap: 16px; } .form-row .form-group { flex: 1; } label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; } input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid black; border-radius: 5px; font-size: 14px; background: white; color: black; } textarea { resize: vertical; height: 80px; } input:focus, select:focus, textarea:focus { outline: none; border-color: #555; } select:disabled { background: #f0f0f0; color: #555; cursor: not-allowed; } .form-actions { margin-top: 24px; display: flex; gap: 10px; } .time-hint { font-size: 11px; color: #888; margin-top: 4px; } .time-error { font-size: 12px; color: #cc0000; margin-top: 6px; display: none; font-weight: bold; }</style>
+  <style>* { box-sizing: border-box; margin: 0; padding: 0; } body { font-family: Arial; background: white; color: black; } nav { background: black; padding: 0 24px; display: flex; align-items: center; height: 52px; } nav .brand { font-size: 17px; font-weight: bold; color: white; margin-right: 28px; } nav a { color: #ccc; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 4px; } nav a:hover { background: #333; color: white; } .page-header { display: flex; align-items: center; justify-content: space-between; margin: 24px 28px 20px; } .page-header h1 { font-size: 20px; } .btn { display: inline-block; padding: 8px 18px; border-radius: 4px; border: none; cursor: pointer; font-size: 13px; font-weight: bold; text-decoration: none; } .btn-success { background: black; color: white; } .btn-secondary { background: white; color: black; border: 1px solid black; } .btn:hover { opacity: 0.75; } .form-wrap { margin: 0 28px; } .form-card { background: white; border-radius: 8px; padding: 32px 36px; max-width: 560px; border: 1px solid black; } .form-card h2 { font-size: 15px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px solid black; } .form-group { margin-bottom: 18px; } .form-row { display: flex; gap: 16px; } .form-row .form-group { flex: 1; } label { display: block; font-size: 12px; font-weight: bold; margin-bottom: 6px; text-transform: uppercase; } input, select, textarea { width: 100%; padding: 9px 12px; border: 1px solid black; border-radius: 5px; font-size: 14px; background: white; color: black; } textarea { resize: vertical; height: 80px; } input:focus, select:focus, textarea:focus { outline: none; border-color: #555; } .form-actions { margin-top: 24px; display: flex; gap: 10px; }</style>
 </head>
 <body>
 <nav><span class="brand">&#127979; PTMS</span><a th:href="@{/dashboard}">Home</a><a th:href="@{/meetings}">Meetings</a></nav>
@@ -11,20 +11,12 @@
 </div>
 <div class="form-wrap"><div class="form-card">
   <h2 th:text="${meeting == null ? 'Enter Meeting Details' : 'Update Meeting Details'}"></h2>
-  <form th:action="@{/meetings}" method="post" id="meetingForm">
+  <form th:action="@{/meetings}" method="post">
     <input type="hidden" name="action"    th:value="${meeting != null ? 'update' : 'insert'}">
     <input type="hidden" name="meetingId" th:if="${meeting != null}" th:value="${meeting.meetingId}">
-
     <div class="form-row">
-
-      <!-- Parent — locked if parent is logged in -->
       <div class="form-group"><label>Parent</label>
-        <input type="hidden" name="parentId"
-               th:if="${session.userRole == 'parent'}"
-               th:value="${loggedInParentId}">
-        <select name="parentId"
-                th:disabled="${session.userRole == 'parent'}"
-                required>
+        <select name="parentId" required>
           <option value="">-- Select Parent --</option>
           <option th:each="p : ${parents}"
                   th:value="${p.parentId}"
@@ -34,15 +26,8 @@
           </option>
         </select>
       </div>
-
-      <!-- Teacher — locked if teacher is logged in -->
       <div class="form-group"><label>Teacher</label>
-        <input type="hidden" name="teacherId"
-               th:if="${session.userRole == 'teacher'}"
-               th:value="${loggedInTeacherId}">
-        <select name="teacherId"
-                th:disabled="${session.userRole == 'teacher'}"
-                required>
+        <select name="teacherId" required>
           <option value="">-- Select Teacher --</option>
           <option th:each="t : ${teachers}"
                   th:value="${t.teacherId}"
@@ -52,35 +37,18 @@
           </option>
         </select>
       </div>
-
     </div>
-
     <div class="form-row">
-
-      <!-- Date — no past dates -->
       <div class="form-group"><label>Date</label>
-        <input type="date" name="meetingDate"
-               id="meetingDate"
-               th:value="${meeting?.meetingDate}" required>
+        <input type="date" name="meetingDate" th:value="${meeting?.meetingDate}" required>
       </div>
-
-      <!-- Time — proper time picker, restricted to 11:00-12:00 or 15:30-18:00 -->
       <div class="form-group"><label>Time</label>
-        <input type="time" name="meetingTime"
-               id="meetingTime"
-               th:value="${meeting?.meetingTime}" required>
-        <p class="time-hint">&#128338; Allowed: 11:00–12:00 or 15:30–18:00</p>
-        <p class="time-error" id="timeError">
-          &#9888; Please select a time between 11:00–12:00 or 15:30–18:00.
-        </p>
+        <input type="text" name="meetingTime" th:value="${meeting?.meetingTime}" placeholder="e.g. 10:00" required>
       </div>
-
     </div>
-
     <div class="form-group"><label>Notes</label>
       <textarea name="notes" th:text="${meeting?.notes}"></textarea>
     </div>
-
     <div class="form-actions">
       <button type="submit" class="btn btn-success"
               th:text="${meeting == null ? '&#10003; Add Meeting' : '&#10003; Update Meeting'}"></button>
@@ -88,48 +56,4 @@
     </div>
   </form>
 </div></div>
-
-<script>
-  // No past dates
-  var today = new Date().toISOString().split('T')[0];
-  document.getElementById('meetingDate').min = today;
-
-  // Validate time — must be 11:00-12:00 OR 15:30-18:00
-  function isValidTime(value) {
-    if (!value) return false;
-    var parts   = value.split(':');
-    var hours   = parseInt(parts[0]);
-    var minutes = parseInt(parts[1]);
-    var total   = hours * 60 + minutes;
-    var slot1Start = 11 * 60;
-    var slot1End   = 12 * 60;
-    var slot2Start = 15 * 60 + 30;
-    var slot2End   = 18 * 60;
-    return (total >= slot1Start && total <= slot1End) ||
-           (total >= slot2Start && total <= slot2End);
-  }
-
-  // Show error as user picks a time
-  document.getElementById('meetingTime').addEventListener('change', function() {
-    var err = document.getElementById('timeError');
-    if (!isValidTime(this.value)) {
-      err.style.display = 'block';
-      this.style.borderColor = '#cc0000';
-    } else {
-      err.style.display = 'none';
-      this.style.borderColor = 'black';
-    }
-  });
-
-  // Block submission if time is invalid
-  document.getElementById('meetingForm').addEventListener('submit', function(e) {
-    var timeValue = document.getElementById('meetingTime').value;
-    if (!isValidTime(timeValue)) {
-      e.preventDefault();
-      document.getElementById('timeError').style.display = 'block';
-      document.getElementById('meetingTime').style.borderColor = '#cc0000';
-      document.getElementById('meetingTime').focus();
-    }
-  });
-</script>
 </body></html>

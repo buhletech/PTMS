@@ -50,6 +50,7 @@
   <span class="brand">&#127979; PTMS</span>
   <a th:href="@{/parent/children}">My Children</a>
   <a th:href="@{/meetings}">Meetings</a>
+  <a th:href="@{/announcements}">Announcements</a>
   <span class="username">&#128106; <span th:text="${session.userName}"></span></span>
   <a th:href="@{/logout}" class="logout">Sign Out</a>
 </nav>
@@ -67,6 +68,9 @@
     </a>
     <a th:href="@{/meetings}" class="ql-card">
       <div class="icon">&#129309;</div><h3>Meetings</h3>
+    </a>
+    <a th:href="@{/announcements}" class="ql-card">
+      <div class="icon">&#128226;</div><h3>Announcements</h3>
     </a>
   </div>
 
